@@ -230,8 +230,11 @@
     if (tab === 'resultados') cargarPartidosResultados();
   }
 
+  const TABLA_MAP = { 'equipos': 'Equipos', 'partidos': 'Partidos' };
+
   async function apiFetch(tabla, method = 'GET', body = null, id = null) {
-    const url = id ? `${SUPABASE_URL}/rest/v1/${tabla}?id=eq.${id}` : `${SUPABASE_URL}/rest/v1/${tabla}?select=*&order=categoria,zona,fecha`;
+    const t = TABLA_MAP[tabla] || tabla;
+    const url = id ? `${SUPABASE_URL}/rest/v1/${t}?id=eq.${id}` : `${SUPABASE_URL}/rest/v1/${t}?select=*&order=categoria,zona,fecha`;
     const opts = {
       method,
       headers: {

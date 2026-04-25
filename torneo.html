@@ -157,8 +157,11 @@
   const SUPABASE_URL = 'https://ohwfcqjlzwwsljoywkrj.supabase.co';
   const SUPABASE_KEY = 'sb_publishable_Hfxx8lx-iuyg44_RFnMXQg_F1Bxb7fW';
 
+  const TABLA_MAP = { 'equipos': 'Equipos', 'partidos': 'Partidos' };
+
   async function fetchData(tabla) {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/${tabla}?select=*`, {
+    const t = TABLA_MAP[tabla] || tabla;
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/${t}?select=*`, {
       headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
     });
     return res.json();
