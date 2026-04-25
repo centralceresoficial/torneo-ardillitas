@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Torneo Ardillitas</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600&family=Roboto:wght@300;400&display=swap');
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Roboto', sans-serif; background-color: #111; color: white; }
+
+    #login-screen {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      height: 100vh; gap: 20px;
+    }
+    #login-screen h1 { font-family: 'Bebas Neue', cursive; color: #FFD700; font-size: 3em; letter-spacing: 3px; }
+    #login-screen input { padding: 12px 20px; border-radius: 25px; border: 2px solid #FFD700; background: #222; color: white; font-size: 1em; width: 300px; text-align: center; }
+    #login-screen button { padding: 12px 30px; border-radius: 25px; border: none; background: #FFD700; color: black; font-family: 'Oswald', sans-serif; font-size: 1em; font-weight: 600; cursor: pointer; letter-spacing: 1px; }
+    #login-screen button:hover { background: #e6c200; }
+    #login-error { color: #ff4444; font-size: 0.9em; display: none; }
+
+    #admin-panel { display: none; }
+
+    header { background: linear-gradient(135deg, #1a1a1a 0%, #2a2a00 50%, #1a1a1a 100%); text-align: center; padding: 30px 20px; border-bottom: 4px solid #FFD700; }
+    header h1 { font-family: 'Bebas Neue', cursive; color: #FFD700; font-size: 2.5em; letter-spacing: 3px; }
+    header p { font-family: 'Oswald', sans-serif; color: #aaa; margin-top: 5px; letter-spacing: 2px; text-transform: uppercase; }
+
+    .tabs { display: flex; justify-content: center; gap: 10px; padding: 20px; flex-wrap: wrap; background: #1a1a1a; border-bottom: 2px solid #333; }
+    .tab { font-family: 'Oswald', sans-serif; background: #222; color: #FFD700; border: 2px solid #FFD700; padding: 10px 25px; border-radius: 25px; cursor: pointer; font-size: 0.95em; letter-spacing: 1px; text-transform: uppercase; transition: all 0.3s; }
+    .tab:hover, .tab.activo { background: #FFD700; color: black; }
+
+    .panel { max-width: 960px; margin: 40px auto; padding: 0 20px; display: none; }
+    .panel.visible { display: block; }
+
+    h2 { font-family: 'Bebas Neue', cursive; color: #FFD700; font-size: 2em; letter-spacing: 3px; border-bottom: 3px solid #FFD700; padding-bottom: 10px; margin-bottom: 25px; }
+    h3 { font-family: 'Oswald', sans-serif; color: #FFD700; font-size: 1.2em; letter-spacing: 2px; margin: 25px 0 15px; text-transform: uppercase; }
+
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group label { font-family: 'Oswald', sans-serif; color: #aaa; font-size: 0.9em; letter-spacing: 1px; text-transform: uppercase; }
+    .form-group input, .form-group select { padding: 10px 15px; border-radius: 10px; border: 2px solid #333; background: #222; color: white; font-size: 0.95em; transition: border 0.3s; }
+    .form-group input:focus, .form-group select:focus { outline: none; border-color: #FFD700; }
+
+    .btn { font-family: 'Oswald', sans-serif; padding: 10px 25px; border-radius: 25px; border: none; cursor: pointer; font-size: 0.95em; letter-spacing: 1px; text-transform: uppercase; font-weight: 600; transition: all 0.3s; }
+    .btn-primary { background: #FFD700; color: black; }
+    .btn-primary:hover { background: #e6c200; box-shadow: 0 0 15px rgba(255,215,0,0.4); }
+    .btn-danger { background: #ff4444; color: white; }
+    .btn-danger:hover { background: #cc0000; }
+    .btn-success { background: #44bb44; color: white; }
+    .btn-success:hover { background: #228822; }
+
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
+    table tr:first-child { background: linear-gradient(90deg, #222 0%, #2a2a00 50%, #222 100%); border-bottom: 2px solid #FFD700; }
+    th { padding: 12px 10px; color: #FFD700; font-family: 'Oswald', sans-serif; letter-spacing: 1px; text-transform: uppercase; text-align: left; }
+    td { padding: 10px; border-bottom: 1px solid #2a2a2a; vertical-align: middle; }
+    tr:nth-child(even) { background-color: #1a1a1a; }
+
+    .escudo-preview { width: 35px; height: 35px; object-fit: contain; border-radius: 50%; }
+    .mensaje { padding: 12px 20px; border-radius: 10px; margin: 15px 0; font-family: 'Oswald', sans-serif; letter-spacing: 1px; display: none; }
+    .mensaje.ok { background: #1a3a1a; border: 2px solid #44bb44; color: #44bb44; }
+    .mensaje.error { background: #3a1a1a; border: 2px solid #ff4444; color: #ff4444; }
+
+    .input-goles { width: 60px; padding: 6px; border-radius: 8px; border: 2px solid #333; background: #222; color: white; text-align: center; font-size: 1em; }
+    .input-goles:focus { outline: none; border-color: #FFD700; }
+
+    .jugado-check { width: 20px; height: 20px; cursor: pointer; accent-color: #FFD700; }
+  </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <h1>🔐 Panel Admin</h1>
+  <p style="color:#aaa; font-family:'Oswald',sans-serif; letter-spacing:2px;">TORNEO ARDILLITAS — 17° EDICIÓN</p>
+  <input type="password" id="password-input" placeholder="Contraseña" onkeypress="if(event.key==='Enter') login()">
+  <button onclick="login()">Ingresar</button>
+  <p id="login-error">❌ Contraseña incorrecta</p>
+</div>
+
+<!-- PANEL -->
+<div id="admin-panel">
+  <header>
+    <h1>⚙️ Panel de Administración</h1>
+    <p>Torneo Ardillitas — 17° Edición</p>
+  </header>
+
+  <div class="tabs">
+    <button class="tab activo" onclick="verTab('equipos')">👕 Equipos</button>
+    <button class="tab" onclick="verTab('partidos')">⚽ Partidos</button>
+    <button class="tab" onclick="verTab('resultados')">📊 Resultados</button>
+  </div>
+
+  <!-- TAB EQUIPOS -->
+  <div id="tab-equipos" class="panel visible">
+    <h2>👕 Gestión de Equipos</h2>
+    <div id="msg-equipos" class="mensaje"></div>
+
+    <h3>Agregar nuevo equipo</h3>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Nombre del equipo</label>
+        <input type="text" id="eq-nombre" placeholder="Ej: Club Atlético">
+      </div>
+      <div class="form-group">
+        <label>Categoría</label>
+        <select id="eq-cat">
+          <option value="A">A — 2015</option>
+          <option value="B">B — 2016</option>
+          <option value="C">C — 2017</option>
+          <option value="D">D — 2018</option>
+          <option value="E">E — 2019-2020</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Zona</label>
+        <select id="eq-zona">
+          <option value="1">Zona 1</option>
+          <option value="2">Zona 2</option>
+          <option value="3">Zona 3</option>
+          <option value="4">Zona 4</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>URL del escudo (opcional)</label>
+        <input type="text" id="eq-escudo" placeholder="https://...imagen.png">
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="agregarEquipo()">➕ Agregar Equipo</button>
+
+    <h3>Equipos cargados</h3>
+    <div id="tabla-equipos"><p style="color:#aaa;">Cargando...</p></div>
+  </div>
+
+  <!-- TAB PARTIDOS -->
+  <div id="tab-partidos" class="panel">
+    <h2>⚽ Gestión de Partidos</h2>
+    <div id="msg-partidos" class="mensaje"></div>
+
+    <h3>Agregar partido</h3>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Categoría</label>
+        <select id="pt-cat" onchange="cargarEquiposSelect()">
+          <option value="A">A — 2015</option>
+          <option value="B">B — 2016</option>
+          <option value="C">C — 2017</option>
+          <option value="D">D — 2018</option>
+          <option value="E">E — 2019-2020</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Zona</label>
+        <select id="pt-zona" onchange="cargarEquiposSelect()">
+          <option value="1">Zona 1</option>
+          <option value="2">Zona 2</option>
+          <option value="3">Zona 3</option>
+          <option value="4">Zona 4</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Fecha</label>
+        <select id="pt-fecha">
+          <option value="Fecha 1">Fecha 1</option>
+          <option value="Fecha 2">Fecha 2</option>
+          <option value="Fecha 3">Fecha 3</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Equipo Local</label>
+        <select id="pt-local"><option>Primero seleccioná categoría y zona</option></select>
+      </div>
+      <div class="form-group">
+        <label>Equipo Visitante</label>
+        <select id="pt-visitante"><option>Primero seleccioná categoría y zona</option></select>
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="agregarPartido()">➕ Agregar Partido</button>
+
+    <h3>Partidos cargados</h3>
+    <div id="tabla-partidos"><p style="color:#aaa;">Cargando...</p></div>
+  </div>
+
+  <!-- TAB RESULTADOS -->
+  <div id="tab-resultados" class="panel">
+    <h2>📊 Cargar Resultados</h2>
+    <div id="msg-resultados" class="mensaje"></div>
+    <p style="color:#aaa; margin-bottom:20px;">Filtrá por categoría y cargá los resultados de los partidos jugados.</p>
+
+    <div class="form-grid" style="max-width:400px;">
+      <div class="form-group">
+        <label>Categoría</label>
+        <select id="res-cat" onchange="cargarPartidosResultados()">
+          <option value="A">A — 2015</option>
+          <option value="B">B — 2016</option>
+          <option value="C">C — 2017</option>
+          <option value="D">D — 2018</option>
+          <option value="E">E — 2019-2020</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="tabla-resultados"><p style="color:#aaa;">Cargando...</p></div>
+  </div>
+</div>
+
+<script>
+  const SUPABASE_URL = 'https://ohwfcqjlzwwsljoywkrj.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_Hfxx8lx-iuyg44_RFnMXQg_F1Bxb7fW';
+  const PASSWORD = 'ardillitas2026';
+
+  let equiposData = [];
+  let partidosData = [];
+
+  function login() {
+    const pass = document.getElementById('password-input').value;
+    if (pass === PASSWORD) {
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('admin-panel').style.display = 'block';
+      cargarTodo();
+    } else {
+      document.getElementById('login-error').style.display = 'block';
+    }
+  }
+
+  function verTab(tab) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('visible'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('activo'));
+    document.getElementById('tab-' + tab).classList.add('visible');
+    event.target.classList.add('activo');
+    if (tab === 'resultados') cargarPartidosResultados();
+  }
+
+  async function apiFetch(tabla, method = 'GET', body = null, id = null) {
+    const url = id ? `${SUPABASE_URL}/rest/v1/${tabla}?id=eq.${id}` : `${SUPABASE_URL}/rest/v1/${tabla}?select=*&order=categoria,zona,fecha`;
+    const opts = {
+      method,
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'application/json',
+        'Prefer': method === 'POST' ? 'return=representation' : ''
+      }
+    };
+    if (body) opts.body = JSON.stringify(body);
+    const res = await fetch(url, opts);
+    if (method === 'GET') return res.json();
+    return res;
+  }
+
+  async function cargarTodo() {
+    equiposData = await apiFetch('equipos');
+    partidosData = await apiFetch('partidos');
+    renderTablaEquipos();
+    renderTablaPartidos();
+  }
+
+  function mostrarMensaje(id, texto, tipo) {
+    const el = document.getElementById(id);
+    el.textContent = texto;
+    el.className = `mensaje ${tipo}`;
+    el.style.display = 'block';
+    setTimeout(() => el.style.display = 'none', 3000);
+  }
+
+  // ===== EQUIPOS =====
+  async function agregarEquipo() {
+    const nombre = document.getElementById('eq-nombre').value.trim();
+    const categoria = document.getElementById('eq-cat').value;
+    const zona = document.getElementById('eq-zona').value;
+    const escudo_url = document.getElementById('eq-escudo').value.trim();
+
+    if (!nombre) { mostrarMensaje('msg-equipos', '❌ Ingresá el nombre del equipo', 'error'); return; }
+
+    await apiFetch('equipos', 'POST', { nombre, categoria, zona, escudo_url: escudo_url || null });
+    document.getElementById('eq-nombre').value = '';
+    document.getElementById('eq-escudo').value = '';
+    mostrarMensaje('msg-equipos', '✅ Equipo agregado correctamente', 'ok');
+    equiposData = await apiFetch('equipos');
+    renderTablaEquipos();
+  }
+
+  function renderTablaEquipos() {
+    const container = document.getElementById('tabla-equipos');
+    if (equiposData.length === 0) { container.innerHTML = '<p style="color:#aaa;">No hay equipos cargados.</p>'; return; }
+
+    let html = `<table>
+      <tr><th>Escudo</th><th>Nombre</th><th>Categoría</th><th>Zona</th><th>Acción</th></tr>`;
+    equiposData.forEach(e => {
+      const escudo = e.escudo_url ? `<img src="${e.escudo_url}" class="escudo-preview" alt="${e.nombre}">` : '—';
+      html += `<tr>
+        <td>${escudo}</td>
+        <td>${e.nombre}</td>
+        <td>Cat. ${e.categoria}</td>
+        <td>Zona ${e.zona}</td>
+        <td><button class="btn btn-danger" onclick="eliminarEquipo(${e.id})">🗑️</button></td>
+      </tr>`;
+    });
+    html += '</table>';
+    container.innerHTML = html;
+  }
+
+  async function eliminarEquipo(id) {
+    if (!confirm('¿Eliminar este equipo?')) return;
+    await apiFetch('equipos', 'DELETE', null, id);
+    mostrarMensaje('msg-equipos', '✅ Equipo eliminado', 'ok');
+    equiposData = await apiFetch('equipos');
+    renderTablaEquipos();
+  }
+
+  // ===== PARTIDOS =====
+  function cargarEquiposSelect() {
+    const cat = document.getElementById('pt-cat').value;
+    const zona = document.getElementById('pt-zona').value;
+    const equiposFiltrados = equiposData.filter(e => e.categoria === cat && e.zona === zona);
+    const opts = equiposFiltrados.length > 0
+      ? equiposFiltrados.map(e => `<option value="${e.nombre}">${e.nombre}</option>`).join('')
+      : '<option>No hay equipos en esta zona</option>';
+    document.getElementById('pt-local').innerHTML = opts;
+    document.getElementById('pt-visitante').innerHTML = opts;
+  }
+
+  async function agregarPartido() {
+    const categoria = document.getElementById('pt-cat').value;
+    const zona = document.getElementById('pt-zona').value;
+    const fecha = document.getElementById('pt-fecha').value;
+    const equipo_local = document.getElementById('pt-local').value;
+    const equipo_visitante = document.getElementById('pt-visitante').value;
+
+    if (equipo_local === equipo_visitante) { mostrarMensaje('msg-partidos', '❌ Los equipos no pueden ser iguales', 'error'); return; }
+
+    await apiFetch('partidos', 'POST', { categoria, zona, fecha, equipo_local, equipo_visitante, goles_local: 0, goles_visitante: 0, jugado: false });
+    mostrarMensaje('msg-partidos', '✅ Partido agregado correctamente', 'ok');
+    partidosData = await apiFetch('partidos');
+    renderTablaPartidos();
+  }
+
+  function renderTablaPartidos() {
+    const container = document.getElementById('tabla-partidos');
+    if (partidosData.length === 0) { container.innerHTML = '<p style="color:#aaa;">No hay partidos cargados.</p>'; return; }
+
+    let html = `<table>
+      <tr><th>Cat.</th><th>Zona</th><th>Fecha</th><th>Local</th><th>Visitante</th><th>Acción</th></tr>`;
+    partidosData.forEach(p => {
+      html += `<tr>
+        <td>Cat. ${p.categoria}</td>
+        <td>Zona ${p.zona}</td>
+        <td>${p.fecha}</td>
+        <td>${p.equipo_local}</td>
+        <td>${p.equipo_visitante}</td>
+        <td><button class="btn btn-danger" onclick="eliminarPartido(${p.id})">🗑️</button></td>
+      </tr>`;
+    });
+    html += '</table>';
+    container.innerHTML = html;
+  }
+
+  async function eliminarPartido(id) {
+    if (!confirm('¿Eliminar este partido?')) return;
+    await apiFetch('partidos', 'DELETE', null, id);
+    mostrarMensaje('msg-partidos', '✅ Partido eliminado', 'ok');
+    partidosData = await apiFetch('partidos');
+    renderTablaPartidos();
+  }
+
+  // ===== RESULTADOS =====
+  async function cargarPartidosResultados() {
+    const cat = document.getElementById('res-cat').value;
+    const partidos = partidosData.filter(p => p.categoria === cat);
+    const container = document.getElementById('tabla-resultados');
+
+    if (partidos.length === 0) { container.innerHTML = '<p style="color:#aaa;">No hay partidos cargados para esta categoría.</p>'; return; }
+
+    let html = `<table>
+      <tr><th>Zona</th><th>Fecha</th><th>Local</th><th>Goles</th><th>Visitante</th><th>Goles</th><th>Jugado</th><th>Guardar</th></tr>`;
+    partidos.forEach(p => {
+      html += `<tr>
+        <td>Zona ${p.zona}</td>
+        <td>${p.fecha}</td>
+        <td>${p.equipo_local}</td>
+        <td><input type="number" class="input-goles" id="gl-${p.id}" value="${p.goles_local}" min="0"></td>
+        <td>${p.equipo_visitante}</td>
+        <td><input type="number" class="input-goles" id="gv-${p.id}" value="${p.goles_visitante}" min="0"></td>
+        <td><input type="checkbox" class="jugado-check" id="jug-${p.id}" ${p.jugado ? 'checked' : ''}></td>
+        <td><button class="btn btn-success" onclick="guardarResultado(${p.id})">💾</button></td>
+      </tr>`;
+    });
+    html += '</table>';
+    container.innerHTML = html;
+  }
+
+  async function guardarResultado(id) {
+    const goles_local = parseInt(document.getElementById('gl-' + id).value) || 0;
+    const goles_visitante = parseInt(document.getElementById('gv-' + id).value) || 0;
+    const jugado = document.getElementById('jug-' + id).checked;
+
+    await apiFetch('partidos', 'PATCH', { goles_local, goles_visitante, jugado }, id);
+    mostrarMensaje('msg-resultados', '✅ Resultado guardado correctamente', 'ok');
+    partidosData = await apiFetch('partidos');
+  }
+</script>
+</body>
+</html>
