@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Mi Torneo de Fútbol</title>
+  <style>
+
+    /* FUENTES DE GOOGLE */
+    @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600&family=Roboto:wght@300;400&display=swap');
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #111111;
+      color: white;
+    }
+
+    /* HEADER */
+    header {
+      background: linear-gradient(135deg, #1a1a1a 0%, #2a2a00 50%, #1a1a1a 100%);
+      text-align: center;
+      padding: 50px 20px;
+      border-bottom: 4px solid #FFD700;
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::before {
+      content: '⚽';
+      font-size: 200px;
+      position: absolute;
+      opacity: 0.05;
+      top: -30px;
+      left: -30px;
+    }
+
+    header::after {
+      content: '⚽';
+      font-size: 200px;
+      position: absolute;
+      opacity: 0.05;
+      bottom: -30px;
+      right: -30px;
+    }
+
+    header h1 {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 4em;
+      color: #FFD700;
+      text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+      letter-spacing: 3px;
+    }
+
+    header p {
+      font-family: 'Oswald', sans-serif;
+      color: #aaa;
+      margin-top: 10px;
+      font-size: 1.1em;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    /* NAVEGACION */
+    nav {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      background-color: #1a1a1a;
+      padding: 15px;
+      border-bottom: 2px solid #333;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    nav a {
+      font-family: 'Oswald', sans-serif;
+      color: #FFD700;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 8px 20px;
+      border-radius: 25px;
+      border: 2px solid #FFD700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      transition: all 0.3s;
+    }
+
+    nav a:hover {
+      background-color: #FFD700;
+      color: black;
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+    }
+
+    /* SECCIONES */
+    section {
+      max-width: 960px;
+      margin: 50px auto;
+      padding: 0 20px;
+    }
+
+    h2 {
+      font-family: 'Bebas Neue', cursive;
+      color: #FFD700;
+      font-size: 2.2em;
+      letter-spacing: 3px;
+      border-bottom: 3px solid #FFD700;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+    }
+
+    h3 {
+      font-family: 'Oswald', sans-serif;
+      color: #FFD700;
+      font-size: 1.3em;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-top: 30px;
+    }
+
+    /* TABLAS */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    }
+
+    table tr:first-child {
+      background: linear-gradient(90deg, #222 0%, #2a2a00 50%, #222 100%);
+      border-bottom: 2px solid #FFD700;
+    }
+
+    th {
+      padding: 12px 10px;
+      color: #FFD700;
+      font-family: 'Oswald', sans-serif;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    td {
+      padding: 10px;
+      border-bottom: 1px solid #2a2a2a;
+    }
+
+    tr:nth-child(even) {
+      background-color: #1a1a1a;
+    }
+
+    tr:hover {
+      background-color: #2a2a00;
+      transition: background 0.2s;
+    }
+
+    /* BOTONES DE FILTRO */
+    .filtros {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin: 30px auto;
+      max-width: 960px;
+      padding: 0 20px;
+    }
+
+    .filtros button {
+      font-family: 'Oswald', sans-serif;
+      background-color: #1a1a1a;
+      color: #FFD700;
+      border: 2px solid #FFD700;
+      padding: 10px 22px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 0.95em;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      transition: all 0.3s;
+    }
+
+    .filtros button:hover, .filtros button.activo {
+      background-color: #FFD700;
+      color: black;
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+    }
+
+    .cat-bloque {
+      display: none;
+    }
+
+    .cat-bloque.visible {
+      display: block;
+    }
+
+    /* LINKS */
+    a {
+      color: #FFD700;
+    }
+
+    /* CLASIFICACION */
+    p {
+      line-height: 1.7;
+      color: #ccc;
+    }
+</style>
+  </style>
+</head>
+<body>
+
+ <header>
+  <div style="display:flex; justify-content:center; align-items:center; gap:30px; flex-wrap:wrap; margin-bottom:20px;">
+    <img src="LOGO CLUB CENTRAL (1).png" alt="Logo Club" style="height:100px; filter: drop-shadow(0 0 10px rgba(255,215,0,0.4));">
+    <div>
+      <h1>⚽ Torneo Ardillitas — 17° Edición</h1>
+      <p>Club Central Argentino Olímpico | Ceres, Santa Fe</p>
+    </div>
+    <img src="Escudo Ardillitas.png" alt="Escudo Torneo" style="height:100px; filter: drop-shadow(0 0 10px rgba(255,215,0,0.4));">
+  </div>
+</header>
+
+  <nav>
+    <a href="#info">Info</a>
+    <a href="#posiciones">Posiciones</a>
+    <a href="#fixture">Fixture</a>
+    <a href="#fotos">Fotos</a>
+  </nav>
+
+<section id="info">
+  <h2>📋 Información del torneo</h2>
+  <table style="width:100%; border-collapse: collapse; margin-top: 16px;">
+    <tr style="background-color:#222; border-bottom: 2px solid #FFD700;">
+      <th style="padding: 12px; text-align: left; color: #FFD700;">Dato</th>
+      <th style="padding: 12px; text-align: left; color: #FFD700;">Detalle</th>
+    </tr>
+    <tr style="border-bottom: 1px solid #333;">
+      <td style="padding: 12px;">📅 Fechas</td>
+      <td style="padding: 12px;">21, 22 y 23 de Noviembre de 2026</td>
+    </tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;">
+      <td style="padding: 12px;">📍 Sede</td>
+      <td style="padding: 12px;">Club Central Argentino Olímpico — Sto. Cabral S/N, Ceres, Santa Fe</td>
+    </tr>
+    <tr style="border-bottom: 1px solid #333;">
+      <td style="padding: 12px;">🏅 Categorías</td>
+      <td style="padding: 12px;">
+        A) 2015 &nbsp;|&nbsp; B) 2016 &nbsp;|&nbsp; C) 2017 &nbsp;|&nbsp; D) 2018 &nbsp;|&nbsp; E) 2019-2020
+      </td>
+    </tr>
+  </table>
+</section>  <h2 style="color:#FFD700; border-bottom: 2px solid #FFD700; padding-bottom: 8px; margin-top: 40px;">📞 Contacto</h2>
+  <table style="width:100%; border-collapse: collapse; margin-top: 16px;">
+    <tr style="background-color:#222; border-bottom: 2px solid #FFD700;">
+      <th style="padding: 12px; text-align: left; color: #FFD700;">Rol</th>
+      <th style="padding: 12px; text-align: left; color: #FFD700;">Nombre</th>
+      <th style="padding: 12px; text-align: left; color: #FFD700;">Teléfono</th>
+    </tr>
+    <tr style="border-bottom: 1px solid #333;">
+      <td style="padding: 12px;">Coordinador</td>
+      <td style="padding: 12px;">Acuña Leandro</td>
+      <td style="padding: 12px;">📱 3491-537426</td>
+    </tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;">
+      <td style="padding: 12px;">Sub Coordinador</td>
+      <td style="padding: 12px;">Ceccotti Alejo</td>
+      <td style="padding: 12px;">📱 3491-510266</td>
+    </tr>
+    <tr style="border-bottom: 1px solid #333;">
+      <td style="padding: 12px;">Instagram</td>
+      <td style="padding: 12px;" colspan="2">
+        <a href="https://instagram.com/torneoardillitas" target="_blank" style="color: #FFD700;">@torneoardillitas</a>
+      </td>
+    </tr>
+  </table>
+</section>
+
+  <section id="posiciones">
+  <h2>🏆 Tabla de posiciones</h2>
+
+  <!-- BOTONES DE FILTRO POSICIONES -->
+  <div class="filtros">
+    <button onclick="filtrarPos('A')" id="btnP-A">Categoría A (2015)</button>
+    <button onclick="filtrarPos('B')" id="btnP-B">Categoría B (2016)</button>
+    <button onclick="filtrarPos('C')" id="btnP-C">Categoría C (2017)</button>
+    <button onclick="filtrarPos('D')" id="btnP-D">Categoría D (2018)</button>
+    <button onclick="filtrarPos('E')" id="btnP-E">Categoría E (2019-2020)</button>
+  </div>
+
+  <!-- CATEGORIA A -->
+  <div class="cat-bloque" id="pos-A">
+    <h3 style="color:#FFD700; margin-top: 30px;">Zona 1</h3>
+    <table style="width:100%; border-collapse: collapse; margin-top: 10px;">
+      <tr style="background-color:#222; border-bottom: 2px solid #FFD700;">
+        <th style="padding: 10px; color:#FFD700; text-align:left;">Equipo</th>
+        <th style="padding: 10px; color:#FFD700;">PJ</th>
+        <th style="padding: 10px; color:#FFD700;">G</th>
+        <th style="padding: 10px; color:#FFD700;">E</th>
+        <th style="padding: 10px; color:#FFD700;">P</th>
+        <th style="padding: 10px; color:#FFD700;">GF</th>
+        <th style="padding: 10px; color:#FFD700;">GC</th>
+        <th style="padding: 10px; color:#FFD700;">DIF</th>
+        <th style="padding: 10px; color:#FFD700;">PTS</th>
+      </tr>
+      <tr style="border-bottom: 1px solid #333;"><td style="padding: 10px;">Equipo 1</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td></tr>
+      <tr style="background-color:#222; border-bottom: 1px solid #333;"><td style="padding: 10px;">Equipo 2</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td></tr>
+      <tr style="border-bottom: 1px solid #333;"><td style="padding: 10px;">Equipo 3</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td></tr>
+      <tr style="background-color:#222; border-bottom: 1px solid #333;"><td style="padding: 10px;">Equipo 4</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td></tr>
+    </table>
+
+    <h3 style="color:#FFD700; margin-top: 30px;">Zona 2</h3>
+    <table style="width:100%; border-collapse: collapse; margin-top: 10px;">
+      <tr style="background-color:#222; border-bottom: 2px solid #FFD700;">
+        <th style="padding: 10px; color:#FFD700; text-align:left;">Equipo</th>
+        <th style="padding: 10px; color:#FFD700;">PJ</th><th style="padding: 10px; color:#FFD700;">G</th><th style="padding: 10px; color:#FFD700;">E</th><th style="padding: 10px; color:#FFD700;">P</th><th style="padding: 10px; color:#FFD700;">GF</th><th style="padding: 10px; color:#FFD700;">GC</th><th style="padding: 10px; color:#FFD700;">DIF</th><th style="padding: 10px; color:#FFD700;">PTS</th>
+      </tr>
+      <tr style="border-bottom: 1px solid #333;"><td style="padding: 10px;">Equipo 5</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td></tr>
+      <tr style="background-color:#222; border-bottom: 1px solid #333;"><td style="padding: 10px;">Equipo 6</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td></tr>
+      <tr style="border-bottom: 1px solid #333;"><td style="padding: 10px;">Equipo 7</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td></tr>
+      <tr style="background-color:#222; border-bottom: 1px solid #333;"><td style="padding: 10px;">Equipo 8</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td></tr>
+    </table>
+
+    <h3 style="color:#FFD700; margin-top: 30px;">Zona 3</h3>
+    <table style="width:100%; border-collapse: collapse; margin-top: 10px;">
+      <tr style="background-color:#222; border-bottom: 2px solid #FFD700;">
+        <th style="padding: 10px; color:#FFD700; text-align:left;">Equipo</th>
+        <th style="padding: 10px; color:#FFD700;">PJ</th><th style="padding: 10px; color:#FFD700;">G</th><th style="padding: 10px; color:#FFD700;">E</th><th style="padding: 10px; color:#FFD700;">P</th><th style="padding: 10px; color:#FFD700;">GF</th><th style="padding: 10px; color:#FFD700;">GC</th><th style="padding: 10px; color:#FFD700;">DIF</th><th style="padding: 10px; color:#FFD700;">PTS</th>
+      </tr>
+      <tr style="border-bottom: 1px solid #333;"><td style="padding: 10px;">Equipo 9</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td></tr>
+      <tr style="background-color:#222; border-bottom: 1px solid #333;"><td style="padding: 10px;">Equipo 10</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td></tr>
+      <tr style="border-bottom: 1px solid #333;"><td style="padding: 10px;">Equipo 11</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td></tr>
+      <tr style="background-color:#222; border-bottom: 1px solid #333;"><td style="padding: 10px;">Equipo 12</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td></tr>
+    </table>
+
+    <h3 style="color:#FFD700; margin-top: 30px;">Zona 4</h3>
+    <table style="width:100%; border-collapse: collapse; margin-top: 10px;">
+      <tr style="background-color:#222; border-bottom: 2px solid #FFD700;">
+        <th style="padding: 10px; color:#FFD700; text-align:left;">Equipo</th>
+        <th style="padding: 10px; color:#FFD700;">PJ</th><th style="padding: 10px; color:#FFD700;">G</th><th style="padding: 10px; color:#FFD700;">E</th><th style="padding: 10px; color:#FFD700;">P</th><th style="padding: 10px; color:#FFD700;">GF</th><th style="padding: 10px; color:#FFD700;">GC</th><th style="padding: 10px; color:#FFD700;">DIF</th><th style="padding: 10px; color:#FFD700;">PTS</th>
+      </tr>
+      <tr style="border-bottom: 1px solid #333;"><td style="padding: 10px;">Equipo 13</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td></tr>
+      <tr style="background-color:#222; border-bottom: 1px solid #333;"><td style="padding: 10px;">Equipo 14</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td></tr>
+      <tr style="border-bottom: 1px solid #333;"><td style="padding: 10px;">Equipo 15</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td></tr>
+      <tr style="background-color:#222; border-bottom: 1px solid #333;"><td style="padding: 10px;">Equipo 16</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td><td style="padding: 10px; text-align:center;">0</td></tr>
+    </table>
+    <p style="color:#aaa; margin-top: 16px;">🥇 1° y 2° de zona clasifican a <strong style="color:#FFD700;">Copa de Oro</strong> — 🥈 3° y 4° a <strong style="color:#aaa;">Copa de Plata</strong></p>
+  </div>
+
+  <!-- CATEGORIAS B, C, D, E - misma estructura, por ahora ocultas -->
+  <div class="cat-bloque" id="pos-B">
+    <p style="color:#aaa; margin-top: 20px;">Posiciones Categoría B — próximamente</p>
+  </div>
+  <div class="cat-bloque" id="pos-C">
+    <p style="color:#aaa; margin-top: 20px;">Posiciones Categoría C — próximamente</p>
+  </div>
+  <div class="cat-bloque" id="pos-D">
+    <p style="color:#aaa; margin-top: 20px;">Posiciones Categoría D — próximamente</p>
+  </div>
+  <div class="cat-bloque" id="pos-E">
+    <p style="color:#aaa; margin-top: 20px;">Posiciones Categoría E — próximamente</p>
+  </div>
+
+  </section>
+
+<section id="fixture">
+
+  <!-- BOTONES DE FILTRO -->
+  <div class="filtros">
+    <button onclick="filtrar('A')" id="btn-A">Categoría A (2015)</button>
+    <button onclick="filtrar('B')" id="btn-B">Categoría B (2016)</button>
+    <button onclick="filtrar('C')" id="btn-C">Categoría C (2017)</button>
+    <button onclick="filtrar('D')" id="btn-D">Categoría D (2018)</button>
+    <button onclick="filtrar('E')" id="btn-E">Categoría E (2019-2020)</button>
+  </div>
+
+  <div class="cat-bloque" id="cat-A">
+  <h2>📅 Fixture — Categoría A (2015)</h2>
+  <p style="color:#aaa;">Sábado 21 de Noviembre 2026 — Fase de Grupos</p>
+
+  <!-- ZONA 1 -->
+  <h3 style="color:#FFD700; margin-top: 30px;">Zona 1</h3>
+  <table style="width:100%; border-collapse: collapse; margin-top: 10px;">
+    <tr style="background-color:#222; border-bottom: 2px solid #FFD700;">
+      <th style="padding: 10px; color:#FFD700;">Partido</th>
+      <th style="padding: 10px; color:#FFD700;">Equipo A</th>
+      <th style="padding: 10px; color:#FFD700; text-align:center;">VS</th>
+      <th style="padding: 10px; color:#FFD700;">Equipo B</th>
+      <th style="padding: 10px; color:#FFD700; text-align:center;">Resultado</th>
+    </tr>
+    <tr style="border-bottom: 1px solid #333;">
+      <td style="padding: 10px;">Fecha 1</td>
+      <td style="padding: 10px;">Equipo 1</td>
+      <td style="padding: 10px; text-align:center;">vs</td>
+      <td style="padding: 10px;">Equipo 2</td>
+      <td style="padding: 10px; text-align:center;">— : —</td>
+    </tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;">
+      <td style="padding: 10px;">Fecha 1</td>
+      <td style="padding: 10px;">Equipo 3</td>
+      <td style="padding: 10px; text-align:center;">vs</td>
+      <td style="padding: 10px;">Equipo 4</td>
+      <td style="padding: 10px; text-align:center;">— : —</td>
+    </tr>
+    <tr style="border-bottom: 1px solid #333;">
+      <td style="padding: 10px;">Fecha 2</td>
+      <td style="padding: 10px;">Equipo 1</td>
+      <td style="padding: 10px; text-align:center;">vs</td>
+      <td style="padding: 10px;">Equipo 3</td>
+      <td style="padding: 10px; text-align:center;">— : —</td>
+    </tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;">
+      <td style="padding: 10px;">Fecha 2</td>
+      <td style="padding: 10px;">Equipo 2</td>
+      <td style="padding: 10px; text-align:center;">vs</td>
+      <td style="padding: 10px;">Equipo 4</td>
+      <td style="padding: 10px; text-align:center;">— : —</td>
+    </tr>
+    <tr style="border-bottom: 1px solid #333;">
+      <td style="padding: 10px;">Fecha 3</td>
+      <td style="padding: 10px;">Equipo 1</td>
+      <td style="padding: 10px; text-align:center;">vs</td>
+      <td style="padding: 10px;">Equipo 4</td>
+      <td style="padding: 10px; text-align:center;">— : —</td>
+    </tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;">
+      <td style="padding: 10px;">Fecha 3</td>
+      <td style="padding: 10px;">Equipo 2</td>
+      <td style="padding: 10px; text-align:center;">vs</td>
+      <td style="padding: 10px;">Equipo 3</td>
+      <td style="padding: 10px; text-align:center;">— : —</td>
+    </tr>
+  </table>
+
+    <p style="color:#aaa; margin-top: 16px;">🥇 1° y 2° de zona clasifican a <strong style="color:#FFD700;">Copa de Oro</strong> — 🥈 3° y 4° a <strong style="color:#aaa;">Copa de Plata</strong></p>
+
+  <!-- ZONA 2 -->
+  <h3 style="color:#FFD700; margin-top: 30px;">Zona 2</h3>
+  <table style="width:100%; border-collapse: collapse; margin-top: 10px;">
+    <tr style="background-color:#222; border-bottom: 2px solid #FFD700;">
+      <th style="padding: 10px; color:#FFD700;">Partido</th>
+      <th style="padding: 10px; color:#FFD700;">Equipo A</th>
+      <th style="padding: 10px; color:#FFD700; text-align:center;">VS</th>
+      <th style="padding: 10px; color:#FFD700;">Equipo B</th>
+      <th style="padding: 10px; color:#FFD700; text-align:center;">Resultado</th>
+    </tr>
+    <tr style="border-bottom: 1px solid #333;">
+      <td style="padding: 10px;">Fecha 1</td>
+      <td style="padding: 10px;">Equipo 5</td>
+      <td style="padding: 10px; text-align:center;">vs</td>
+      <td style="padding: 10px;">Equipo 6</td>
+      <td style="padding: 10px; text-align:center;">— : —</td>
+    </tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;">
+      <td style="padding: 10px;">Fecha 1</td>
+      <td style="padding: 10px;">Equipo 7</td>
+      <td style="padding: 10px; text-align:center;">vs</td>
+      <td style="padding: 10px;">Equipo 8</td>
+      <td style="padding: 10px; text-align:center;">— : —</td>
+    </tr>
+    <tr style="border-bottom: 1px solid #333;">
+      <td style="padding: 10px;">Fecha 2</td>
+      <td style="padding: 10px;">Equipo 5</td>
+      <td style="padding: 10px; text-align:center;">vs</td>
+      <td style="padding: 10px;">Equipo 7</td>
+      <td style="padding: 10px; text-align:center;">— : —</td>
+    </tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;">
+      <td style="padding: 10px;">Fecha 2</td>
+      <td style="padding: 10px;">Equipo 6</td>
+      <td style="padding: 10px; text-align:center;">vs</td>
+      <td style="padding: 10px;">Equipo 8</td>
+      <td style="padding: 10px; text-align:center;">— : —</td>
+    </tr>
+    <tr style="border-bottom: 1px solid #333;">
+      <td style="padding: 10px;">Fecha 3</td>
+      <td style="padding: 10px;">Equipo 5</td>
+      <td style="padding: 10px; text-align:center;">vs</td>
+      <td style="padding: 10px;">Equipo 8</td>
+      <td style="padding: 10px; text-align:center;">— : —</td>
+    </tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;">
+      <td style="padding: 10px;">Fecha 3</td>
+      <td style="padding: 10px;">Equipo 6</td>
+      <td style="padding: 10px; text-align:center;">vs</td>
+      <td style="padding: 10px;">Equipo 7</td>
+      <td style="padding: 10px; text-align:center;">— : —</td>
+    </tr>
+  </table>
+    <p style="color:#aaa; margin-top: 16px;">🥇 1° y 2° de zona clasifican a <strong style="color:#FFD700;">Copa de Oro</strong> — 🥈 3° y 4° a <strong style="color:#aaa;">Copa de Plata</strong></p>
+
+  <!-- ZONA 3 -->
+  <h3 style="color:#FFD700; margin-top: 30px;">Zona 3</h3>
+  <table style="width:100%; border-collapse: collapse; margin-top: 10px;">
+    <tr style="background-color:#222; border-bottom: 2px solid #FFD700;">
+      <th style="padding: 10px; color:#FFD700;">Partido</th>
+      <th style="padding: 10px; color:#FFD700;">Equipo A</th>
+      <th style="padding: 10px; color:#FFD700; text-align:center;">VS</th>
+      <th style="padding: 10px; color:#FFD700;">Equipo B</th>
+      <th style="padding: 10px; color:#FFD700; text-align:center;">Resultado</th>
+    </tr>
+    <tr style="border-bottom: 1px solid #333;">
+      <td style="padding: 10px;">Fecha 1</td>
+      <td style="padding: 10px;">Equipo 9</td>
+      <td style="padding: 10px; text-align:center;">vs</td>
+      <td style="padding: 10px;">Equipo 10</td>
+      <td style="padding: 10px; text-align:center;">— : —</td>
+    </tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;">
+      <td style="padding: 10px;">Fecha 1</td>
+      <td style="padding: 10px;">Equipo 11</td>
+      <td style="padding: 10px; text-align:center;">vs</td>
+      <td style="padding: 10px;">Equipo 12</td>
+      <td style="padding: 10px; text-align:center;">— : —</td>
+    </tr>
+    <tr style="border-bottom: 1px solid #333;">
+      <td style="padding: 10px;">Fecha 2</td>
+      <td style="padding: 10px;">Equipo 9</td>
+      <td style="padding: 10px; text-align:center;">vs</td>
+      <td style="padding: 10px;">Equipo 11</td>
+      <td style="padding: 10px; text-align:center;">— : —</td>
+    </tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;">
+      <td style="padding: 10px;">Fecha 2</td>
+      <td style="padding: 10px;">Equipo 10</td>
+      <td style="padding: 10px; text-align:center;">vs</td>
+      <td style="padding: 10px;">Equipo 12</td>
+      <td style="padding: 10px; text-align:center;">— : —</td>
+    </tr>
+    <tr style="border-bottom: 1px solid #333;">
+      <td style="padding: 10px;">Fecha 3</td>
+      <td style="padding: 10px;">Equipo 9</td>
+      <td style="padding: 10px; text-align:center;">vs</td>
+      <td style="padding: 10px;">Equipo 12</td>
+      <td style="padding: 10px; text-align:center;">— : —</td>
+    </tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;">
+      <td style="padding: 10px;">Fecha 3</td>
+      <td style="padding: 10px;">Equipo 10</td>
+      <td style="padding: 10px; text-align:center;">vs</td>
+      <td style="padding: 10px;">Equipo 11</td>
+      <td style="padding: 10px; text-align:center;">— : —</td>
+    </tr>
+  </table>
+    <p style="color:#aaa; margin-top: 16px;">🥇 1° y 2° de zona clasifican a <strong style="color:#FFD700;">Copa de Oro</strong> — 🥈 3° y 4° a <strong style="color:#aaa;">Copa de Plata</strong></p>
+
+  <!-- ZONA 4 -->
+  <h3 style="color:#FFD700; margin-top: 30px;">Zona 4</h3>
+  <table style="width:100%; border-collapse: collapse; margin-top: 10px;">
+    <tr style="background-color:#222; border-bottom: 2px solid #FFD700;">
+      <th style="padding: 10px; color:#FFD700;">Partido</th>
+      <th style="padding: 10px; color:#FFD700;">Equipo A</th>
+      <th style="padding: 10px; color:#FFD700; text-align:center;">VS</th>
+      <th style="padding: 10px; color:#FFD700;">Equipo B</th>
+      <th style="padding: 10px; color:#FFD700; text-align:center;">Resultado</th>
+    </tr>
+    <tr style="border-bottom: 1px solid #333;">
+      <td style="padding: 10px;">Fecha 1</td>
+      <td style="padding: 10px;">Equipo 13</td>
+      <td style="padding: 10px; text-align:center;">vs</td>
+      <td style="padding: 10px;">Equipo 14</td>
+      <td style="padding: 10px; text-align:center;">— : —</td>
+    </tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;">
+      <td style="padding: 10px;">Fecha 1</td>
+      <td style="padding: 10px;">Equipo 15</td>
+      <td style="padding: 10px; text-align:center;">vs</td>
+      <td style="padding: 10px;">Equipo 16</td>
+      <td style="padding: 10px; text-align:center;">— : —</td>
+    </tr>
+    <tr style="border-bottom: 1px solid #333;">
+      <td style="padding: 10px;">Fecha 2</td>
+      <td style="padding: 10px;">Equipo 13</td>
+      <td style="padding: 10px; text-align:center;">vs</td>
+      <td style="padding: 10px;">Equipo 15</td>
+      <td style="padding: 10px; text-align:center;">— : —</td>
+    </tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;">
+      <td style="padding: 10px;">Fecha 2</td>
+      <td style="padding: 10px;">Equipo 14</td>
+      <td style="padding: 10px; text-align:center;">vs</td>
+      <td style="padding: 10px;">Equipo 16</td>
+      <td style="padding: 10px; text-align:center;">— : —</td>
+    </tr>
+    <tr style="border-bottom: 1px solid #333;">
+      <td style="padding: 10px;">Fecha 3</td>
+      <td style="padding: 10px;">Equipo 13</td>
+      <td style="padding: 10px; text-align:center;">vs</td>
+      <td style="padding: 10px;">Equipo 16</td>
+      <td style="padding: 10px; text-align:center;">— : —</td>
+    </tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;">
+      <td style="padding: 10px;">Fecha 3</td>
+      <td style="padding: 10px;">Equipo 14</td>
+      <td style="padding: 10px; text-align:center;">vs</td>
+      <td style="padding: 10px;">Equipo 15</td>
+      <td style="padding: 10px; text-align:center;">— : —</td>
+    </tr>
+  </table>
+
+  <p style="color:#aaa; margin-top: 16px;">🥇 1° y 2° de zona clasifican a <strong style="color:#FFD700;">Copa de Oro</strong> — 🥈 3° y 4° a <strong style="color:#aaa;">Copa de Plata</strong></p>
+
+   </div>
+  <div class="cat-bloque" id="cat-B">
+  <!-- CATEGORIA B -->
+  <h2 style="color:#FFD700; border-bottom: 2px solid #FFD700; padding-bottom: 8px; margin-top: 50px;">📅 Fixture — Categoría B (2016)</h2>
+  <p style="color:#aaa;">Sábado 21 de Noviembre 2026 — Fase de Grupos</p>
+
+  <!-- ZONA 1 -->
+  <h3 style="color:#FFD700; margin-top: 30px;">Zona 1</h3>
+  <table style="width:100%; border-collapse: collapse; margin-top: 10px;">
+    <tr style="background-color:#222; border-bottom: 2px solid #FFD700;">
+      <th style="padding: 10px; color:#FFD700;">Partido</th>
+      <th style="padding: 10px; color:#FFD700;">Equipo A</th>
+      <th style="padding: 10px; color:#FFD700; text-align:center;">VS</th>
+      <th style="padding: 10px; color:#FFD700;">Equipo B</th>
+      <th style="padding: 10px; color:#FFD700; text-align:center;">Resultado</th>
+    </tr>
+    <tr style="border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 1</td><td style="padding: 10px;">Equipo 1</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 2</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 1</td><td style="padding: 10px;">Equipo 3</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 4</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 2</td><td style="padding: 10px;">Equipo 1</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 3</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 2</td><td style="padding: 10px;">Equipo 2</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 4</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 3</td><td style="padding: 10px;">Equipo 1</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 4</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 3</td><td style="padding: 10px;">Equipo 2</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 3</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+  </table>
+ <p style="color:#aaa; margin-top: 16px;">🥇 1° y 2° de zona clasifican a <strong style="color:#FFD700;">Copa de Oro</strong> — 🥈 3° y 4° a <strong style="color:#aaa;">Copa de Plata</strong></p>
+  <!-- ZONA 2 -->
+  <h3 style="color:#FFD700; margin-top: 30px;">Zona 2</h3>
+  <table style="width:100%; border-collapse: collapse; margin-top: 10px;">
+    <tr style="background-color:#222; border-bottom: 2px solid #FFD700;">
+      <th style="padding: 10px; color:#FFD700;">Partido</th>
+      <th style="padding: 10px; color:#FFD700;">Equipo A</th>
+      <th style="padding: 10px; color:#FFD700; text-align:center;">VS</th>
+      <th style="padding: 10px; color:#FFD700;">Equipo B</th>
+      <th style="padding: 10px; color:#FFD700; text-align:center;">Resultado</th>
+    </tr>
+    <tr style="border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 1</td><td style="padding: 10px;">Equipo 5</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 6</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 1</td><td style="padding: 10px;">Equipo 7</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 8</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 2</td><td style="padding: 10px;">Equipo 5</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 7</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 2</td><td style="padding: 10px;">Equipo 6</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 8</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 3</td><td style="padding: 10px;">Equipo 5</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 8</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 3</td><td style="padding: 10px;">Equipo 6</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 7</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+  </table>
+ <p style="color:#aaa; margin-top: 16px;">🥇 1° y 2° de zona clasifican a <strong style="color:#FFD700;">Copa de Oro</strong> — 🥈 3° y 4° a <strong style="color:#aaa;">Copa de Plata</strong></p>
+  <!-- ZONA 3 -->
+  <h3 style="color:#FFD700; margin-top: 30px;">Zona 3</h3>
+  <table style="width:100%; border-collapse: collapse; margin-top: 10px;">
+    <tr style="background-color:#222; border-bottom: 2px solid #FFD700;">
+      <th style="padding: 10px; color:#FFD700;">Partido</th>
+      <th style="padding: 10px; color:#FFD700;">Equipo A</th>
+      <th style="padding: 10px; color:#FFD700; text-align:center;">VS</th>
+      <th style="padding: 10px; color:#FFD700;">Equipo B</th>
+      <th style="padding: 10px; color:#FFD700; text-align:center;">Resultado</th>
+    </tr>
+    <tr style="border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 1</td><td style="padding: 10px;">Equipo 9</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 10</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 1</td><td style="padding: 10px;">Equipo 11</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 12</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 2</td><td style="padding: 10px;">Equipo 9</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 11</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 2</td><td style="padding: 10px;">Equipo 10</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 12</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 3</td><td style="padding: 10px;">Equipo 9</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 12</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 3</td><td style="padding: 10px;">Equipo 10</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 11</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+  </table>
+ <p style="color:#aaa; margin-top: 16px;">🥇 1° y 2° de zona clasifican a <strong style="color:#FFD700;">Copa de Oro</strong> — 🥈 3° y 4° a <strong style="color:#aaa;">Copa de Plata</strong></p>
+  <!-- ZONA 4 -->
+  <h3 style="color:#FFD700; margin-top: 30px;">Zona 4</h3>
+  <table style="width:100%; border-collapse: collapse; margin-top: 10px;">
+    <tr style="background-color:#222; border-bottom: 2px solid #FFD700;">
+      <th style="padding: 10px; color:#FFD700;">Partido</th>
+      <th style="padding: 10px; color:#FFD700;">Equipo A</th>
+      <th style="padding: 10px; color:#FFD700; text-align:center;">VS</th>
+      <th style="padding: 10px; color:#FFD700;">Equipo B</th>
+      <th style="padding: 10px; color:#FFD700; text-align:center;">Resultado</th>
+    </tr>
+    <tr style="border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 1</td><td style="padding: 10px;">Equipo 13</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 14</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 1</td><td style="padding: 10px;">Equipo 15</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 16</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 2</td><td style="padding: 10px;">Equipo 13</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 15</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 2</td><td style="padding: 10px;">Equipo 14</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 16</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 3</td><td style="padding: 10px;">Equipo 13</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 16</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 3</td><td style="padding: 10px;">Equipo 14</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 15</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+  </table>
+
+  <p style="color:#aaa; margin-top: 16px;">🥇 1° y 2° de zona clasifican a <strong style="color:#FFD700;">Copa de Oro</strong> — 🥈 3° y 4° a <strong style="color:#aaa;">Copa de Plata</strong></p>
+
+    </div>
+  <div class="cat-bloque" id="cat-C">
+  <!-- CATEGORIA C -->
+  <h2 style="color:#FFD700; border-bottom: 2px solid #FFD700; padding-bottom: 8px; margin-top: 50px;">📅 Fixture — Categoría C (2017)</h2>
+  <p style="color:#aaa;">Sábado 21 de Noviembre 2026 — Fase de Grupos</p>
+
+  <h3 style="color:#FFD700; margin-top: 30px;">Zona 1</h3>
+  <table style="width:100%; border-collapse: collapse; margin-top: 10px;">
+    <tr style="background-color:#222; border-bottom: 2px solid #FFD700;">
+      <th style="padding: 10px; color:#FFD700;">Partido</th><th style="padding: 10px; color:#FFD700;">Equipo A</th><th style="padding: 10px; color:#FFD700; text-align:center;">VS</th><th style="padding: 10px; color:#FFD700;">Equipo B</th><th style="padding: 10px; color:#FFD700; text-align:center;">Resultado</th>
+    </tr>
+    <tr style="border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 1</td><td style="padding: 10px;">Equipo 1</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 2</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 1</td><td style="padding: 10px;">Equipo 3</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 4</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 2</td><td style="padding: 10px;">Equipo 1</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 3</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 2</td><td style="padding: 10px;">Equipo 2</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 4</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 3</td><td style="padding: 10px;">Equipo 1</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 4</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 3</td><td style="padding: 10px;">Equipo 2</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 3</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+  </table>
+ <p style="color:#aaa; margin-top: 16px;">🥇 1° y 2° de zona clasifican a <strong style="color:#FFD700;">Copa de Oro</strong> — 🥈 3° y 4° a <strong style="color:#aaa;">Copa de Plata</strong></p>
+
+  <h3 style="color:#FFD700; margin-top: 30px;">Zona 2</h3>
+  <table style="width:100%; border-collapse: collapse; margin-top: 10px;">
+    <tr style="background-color:#222; border-bottom: 2px solid #FFD700;">
+      <th style="padding: 10px; color:#FFD700;">Partido</th><th style="padding: 10px; color:#FFD700;">Equipo A</th><th style="padding: 10px; color:#FFD700; text-align:center;">VS</th><th style="padding: 10px; color:#FFD700;">Equipo B</th><th style="padding: 10px; color:#FFD700; text-align:center;">Resultado</th>
+    </tr>
+    <tr style="border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 1</td><td style="padding: 10px;">Equipo 5</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 6</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 1</td><td style="padding: 10px;">Equipo 7</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 8</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 2</td><td style="padding: 10px;">Equipo 5</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 7</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 2</td><td style="padding: 10px;">Equipo 6</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 8</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 3</td><td style="padding: 10px;">Equipo 5</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 8</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 3</td><td style="padding: 10px;">Equipo 6</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 7</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+  </table>
+ <p style="color:#aaa; margin-top: 16px;">🥇 1° y 2° de zona clasifican a <strong style="color:#FFD700;">Copa de Oro</strong> — 🥈 3° y 4° a <strong style="color:#aaa;">Copa de Plata</strong></p>
+
+  <h3 style="color:#FFD700; margin-top: 30px;">Zona 3</h3>
+  <table style="width:100%; border-collapse: collapse; margin-top: 10px;">
+    <tr style="background-color:#222; border-bottom: 2px solid #FFD700;">
+      <th style="padding: 10px; color:#FFD700;">Partido</th><th style="padding: 10px; color:#FFD700;">Equipo A</th><th style="padding: 10px; color:#FFD700; text-align:center;">VS</th><th style="padding: 10px; color:#FFD700;">Equipo B</th><th style="padding: 10px; color:#FFD700; text-align:center;">Resultado</th>
+    </tr>
+    <tr style="border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 1</td><td style="padding: 10px;">Equipo 9</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 10</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 1</td><td style="padding: 10px;">Equipo 11</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 12</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 2</td><td style="padding: 10px;">Equipo 9</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 11</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 2</td><td style="padding: 10px;">Equipo 10</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 12</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 3</td><td style="padding: 10px;">Equipo 9</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 12</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 3</td><td style="padding: 10px;">Equipo 10</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 11</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+  </table>
+ <p style="color:#aaa; margin-top: 16px;">🥇 1° y 2° de zona clasifican a <strong style="color:#FFD700;">Copa de Oro</strong> — 🥈 3° y 4° a <strong style="color:#aaa;">Copa de Plata</strong></p>
+
+  <h3 style="color:#FFD700; margin-top: 30px;">Zona 4</h3>
+  <table style="width:100%; border-collapse: collapse; margin-top: 10px;">
+    <tr style="background-color:#222; border-bottom: 2px solid #FFD700;">
+      <th style="padding: 10px; color:#FFD700;">Partido</th><th style="padding: 10px; color:#FFD700;">Equipo A</th><th style="padding: 10px; color:#FFD700; text-align:center;">VS</th><th style="padding: 10px; color:#FFD700;">Equipo B</th><th style="padding: 10px; color:#FFD700; text-align:center;">Resultado</th>
+    </tr>
+    <tr style="border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 1</td><td style="padding: 10px;">Equipo 13</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 14</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 1</td><td style="padding: 10px;">Equipo 15</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 16</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 2</td><td style="padding: 10px;">Equipo 13</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 15</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 2</td><td style="padding: 10px;">Equipo 14</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 16</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 3</td><td style="padding: 10px;">Equipo 13</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 16</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 3</td><td style="padding: 10px;">Equipo 14</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 15</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+  </table>
+  <p style="color:#aaa; margin-top: 16px;">🥇 1° y 2° de zona clasifican a <strong style="color:#FFD700;">Copa de Oro</strong> — 🥈 3° y 4° a <strong style="color:#aaa;">Copa de Plata</strong></p>
+
+ </div>
+  <div class="cat-bloque" id="cat-D">
+  <!-- CATEGORIA D -->
+  <h2 style="color:#FFD700; border-bottom: 2px solid #FFD700; padding-bottom: 8px; margin-top: 50px;">📅 Fixture — Categoría D (2018)</h2>
+  <p style="color:#aaa;">Sábado 21 de Noviembre 2026 — Fase de Grupos</p>
+
+  <h3 style="color:#FFD700; margin-top: 30px;">Zona 1</h3>
+  <table style="width:100%; border-collapse: collapse; margin-top: 10px;">
+    <tr style="background-color:#222; border-bottom: 2px solid #FFD700;">
+      <th style="padding: 10px; color:#FFD700;">Partido</th><th style="padding: 10px; color:#FFD700;">Equipo A</th><th style="padding: 10px; color:#FFD700; text-align:center;">VS</th><th style="padding: 10px; color:#FFD700;">Equipo B</th><th style="padding: 10px; color:#FFD700; text-align:center;">Resultado</th>
+    </tr>
+    <tr style="border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 1</td><td style="padding: 10px;">Equipo 1</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 2</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 1</td><td style="padding: 10px;">Equipo 3</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 4</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 2</td><td style="padding: 10px;">Equipo 1</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 3</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 2</td><td style="padding: 10px;">Equipo 2</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 4</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 3</td><td style="padding: 10px;">Equipo 1</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 4</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 3</td><td style="padding: 10px;">Equipo 2</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 3</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+  </table>
+ <p style="color:#aaa; margin-top: 16px;">🥇 1° y 2° de zona clasifican a <strong style="color:#FFD700;">Copa de Oro</strong> — 🥈 3° y 4° a <strong style="color:#aaa;">Copa de Plata</strong></p>
+
+  <h3 style="color:#FFD700; margin-top: 30px;">Zona 2</h3>
+  <table style="width:100%; border-collapse: collapse; margin-top: 10px;">
+    <tr style="background-color:#222; border-bottom: 2px solid #FFD700;">
+      <th style="padding: 10px; color:#FFD700;">Partido</th><th style="padding: 10px; color:#FFD700;">Equipo A</th><th style="padding: 10px; color:#FFD700; text-align:center;">VS</th><th style="padding: 10px; color:#FFD700;">Equipo B</th><th style="padding: 10px; color:#FFD700; text-align:center;">Resultado</th>
+    </tr>
+    <tr style="border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 1</td><td style="padding: 10px;">Equipo 5</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 6</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 1</td><td style="padding: 10px;">Equipo 7</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 8</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 2</td><td style="padding: 10px;">Equipo 5</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 7</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 2</td><td style="padding: 10px;">Equipo 6</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 8</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 3</td><td style="padding: 10px;">Equipo 5</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 8</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 3</td><td style="padding: 10px;">Equipo 6</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 7</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+  </table>
+ <p style="color:#aaa; margin-top: 16px;">🥇 1° y 2° de zona clasifican a <strong style="color:#FFD700;">Copa de Oro</strong> — 🥈 3° y 4° a <strong style="color:#aaa;">Copa de Plata</strong></p>
+
+  <h3 style="color:#FFD700; margin-top: 30px;">Zona 3</h3>
+  <table style="width:100%; border-collapse: collapse; margin-top: 10px;">
+    <tr style="background-color:#222; border-bottom: 2px solid #FFD700;">
+      <th style="padding: 10px; color:#FFD700;">Partido</th><th style="padding: 10px; color:#FFD700;">Equipo A</th><th style="padding: 10px; color:#FFD700; text-align:center;">VS</th><th style="padding: 10px; color:#FFD700;">Equipo B</th><th style="padding: 10px; color:#FFD700; text-align:center;">Resultado</th>
+    </tr>
+    <tr style="border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 1</td><td style="padding: 10px;">Equipo 9</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 10</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 1</td><td style="padding: 10px;">Equipo 11</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 12</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 2</td><td style="padding: 10px;">Equipo 9</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 11</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 2</td><td style="padding: 10px;">Equipo 10</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 12</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 3</td><td style="padding: 10px;">Equipo 9</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 12</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 3</td><td style="padding: 10px;">Equipo 10</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 11</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+  </table>
+ <p style="color:#aaa; margin-top: 16px;">🥇 1° y 2° de zona clasifican a <strong style="color:#FFD700;">Copa de Oro</strong> — 🥈 3° y 4° a <strong style="color:#aaa;">Copa de Plata</strong></p>
+
+  <h3 style="color:#FFD700; margin-top: 30px;">Zona 4</h3>
+  <table style="width:100%; border-collapse: collapse; margin-top: 10px;">
+    <tr style="background-color:#222; border-bottom: 2px solid #FFD700;">
+      <th style="padding: 10px; color:#FFD700;">Partido</th><th style="padding: 10px; color:#FFD700;">Equipo A</th><th style="padding: 10px; color:#FFD700; text-align:center;">VS</th><th style="padding: 10px; color:#FFD700;">Equipo B</th><th style="padding: 10px; color:#FFD700; text-align:center;">Resultado</th>
+    </tr>
+    <tr style="border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 1</td><td style="padding: 10px;">Equipo 13</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 14</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 1</td><td style="padding: 10px;">Equipo 15</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 16</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 2</td><td style="padding: 10px;">Equipo 13</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 15</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 2</td><td style="padding: 10px;">Equipo 14</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 16</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 3</td><td style="padding: 10px;">Equipo 13</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 16</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 3</td><td style="padding: 10px;">Equipo 14</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 15</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+  </table>
+  <p style="color:#aaa; margin-top: 16px;">🥇 1° y 2° de zona clasifican a <strong style="color:#FFD700;">Copa de Oro</strong> — 🥈 3° y 4° a <strong style="color:#aaa;">Copa de Plata</strong></p>
+
+  </div>
+  <div class="cat-bloque" id="cat-E">
+  <!-- CATEGORIA E -->
+  <h2 style="color:#FFD700; border-bottom: 2px solid #FFD700; padding-bottom: 8px; margin-top: 50px;">📅 Fixture — Categoría E (2019-2020)</h2>
+  <p style="color:#aaa;">Domingo 22 de Noviembre 2026 — Fase de Grupos</p>
+  <p style="color:#FFD700;">⚠️ Formato a confirmar — Se esperan 12 equipos</p>
+
+  <h3 style="color:#FFD700; margin-top: 30px;">Zona 1</h3>
+  <table style="width:100%; border-collapse: collapse; margin-top: 10px;">
+    <tr style="background-color:#222; border-bottom: 2px solid #FFD700;">
+      <th style="padding: 10px; color:#FFD700;">Partido</th><th style="padding: 10px; color:#FFD700;">Equipo A</th><th style="padding: 10px; color:#FFD700; text-align:center;">VS</th><th style="padding: 10px; color:#FFD700;">Equipo B</th><th style="padding: 10px; color:#FFD700; text-align:center;">Resultado</th>
+    </tr>
+    <tr style="border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 1</td><td style="padding: 10px;">Equipo 1</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 2</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 1</td><td style="padding: 10px;">Equipo 3</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 4</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 2</td><td style="padding: 10px;">Equipo 1</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 3</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 2</td><td style="padding: 10px;">Equipo 2</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 4</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 3</td><td style="padding: 10px;">Equipo 1</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 4</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 3</td><td style="padding: 10px;">Equipo 2</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 3</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+  </table>
+
+  <h3 style="color:#FFD700; margin-top: 30px;">Zona 2</h3>
+  <table style="width:100%; border-collapse: collapse; margin-top: 10px;">
+    <tr style="background-color:#222; border-bottom: 2px solid #FFD700;">
+      <th style="padding: 10px; color:#FFD700;">Partido</th><th style="padding: 10px; color:#FFD700;">Equipo A</th><th style="padding: 10px; color:#FFD700; text-align:center;">VS</th><th style="padding: 10px; color:#FFD700;">Equipo B</th><th style="padding: 10px; color:#FFD700; text-align:center;">Resultado</th>
+    </tr>
+    <tr style="border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 1</td><td style="padding: 10px;">Equipo 5</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 6</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 1</td><td style="padding: 10px;">Equipo 7</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 8</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 2</td><td style="padding: 10px;">Equipo 5</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 7</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 2</td><td style="padding: 10px;">Equipo 6</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 8</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 3</td><td style="padding: 10px;">Equipo 5</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 8</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 3</td><td style="padding: 10px;">Equipo 6</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 7</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+  </table>
+
+  <h3 style="color:#FFD700; margin-top: 30px;">Zona 3</h3>
+  <table style="width:100%; border-collapse: collapse; margin-top: 10px;">
+    <tr style="background-color:#222; border-bottom: 2px solid #FFD700;">
+      <th style="padding: 10px; color:#FFD700;">Partido</th><th style="padding: 10px; color:#FFD700;">Equipo A</th><th style="padding: 10px; color:#FFD700; text-align:center;">VS</th><th style="padding: 10px; color:#FFD700;">Equipo B</th><th style="padding: 10px; color:#FFD700; text-align:center;">Resultado</th>
+    </tr>
+    <tr style="border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 1</td><td style="padding: 10px;">Equipo 9</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 10</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 1</td><td style="padding: 10px;">Equipo 11</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 12</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 2</td><td style="padding: 10px;">Equipo 9</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 11</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 2</td><td style="padding: 10px;">Equipo 10</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 12</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 3</td><td style="padding: 10px;">Equipo 9</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 12</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+    <tr style="background-color:#222; border-bottom: 1px solid #333;"><td style="padding: 10px;">Fecha 3</td><td style="padding: 10px;">Equipo 10</td><td style="padding: 10px; text-align:center;">vs</td><td style="padding: 10px;">Equipo 11</td><td style="padding: 10px; text-align:center;">— : —</td></tr>
+  </table>
+
+  </div>
+</section>
+  <section id="fotos">
+    <h2>📸 Fotos</h2>
+    <p>Próximamente...</p>
+  </section>
+<script>
+  function filtrar(cat) {
+    const bloques = document.querySelectorAll('.cat-bloque');
+    bloques.forEach(b => b.classList.remove('visible'));
+
+    const botones = document.querySelectorAll('.filtros button');
+    botones.forEach(b => b.classList.remove('activo'));
+
+    document.getElementById('cat-' + cat).classList.add('visible');
+    document.getElementById('btn-' + cat).classList.add('activo');
+  }
+
+  // Mostrar categoría A por defecto al cargar
+  filtrar('A');
+
+  function filtrarPos(cat) {
+    const bloques = document.querySelectorAll('[id^="pos-"]');
+    bloques.forEach(b => b.classList.remove('visible'));
+
+    const botones = document.querySelectorAll('[id^="btnP-"]');
+    botones.forEach(b => b.classList.remove('activo'));
+
+    document.getElementById('pos-' + cat).classList.add('visible');
+    document.getElementById('btnP-' + cat).classList.add('activo');
+  }
+
+  filtrarPos('A');
+</script>
+
+<footer style="background: linear-gradient(135deg, #1a1a1a 0%, #2a2a00 50%, #1a1a1a 100%); border-top: 4px solid #FFD700; text-align: center; padding: 40px 20px; margin-top: 60px;">
+  <div style="display:flex; justify-content:center; align-items:center; gap:20px; flex-wrap:wrap; margin-bottom:20px;">
+    <img src="LOGO CLUB CENTRAL (1).png" alt="Logo Club" style="height:60px; filter: drop-shadow(0 0 8px rgba(255,215,0,0.4));">
+    <img src="Escudo Ardillitas.png" alt="Escudo Torneo" style="height:60px; filter: drop-shadow(0 0 8px rgba(255,215,0,0.4));">
+  </div>
+  <p style="font-family:'Bebas Neue', cursive; font-size:1.5em; color:#FFD700; letter-spacing:3px;">Torneo Ardillitas — 17° Edición</p>
+  <p style="font-family:'Oswald', sans-serif; color:#aaa; letter-spacing:2px; margin-top:8px; text-transform:uppercase;">Club Central Argentino Olímpico | Ceres, Santa Fe</p>
+  <p style="margin-top:15px; display:flex; justify-content:center; gap:15px; flex-wrap:wrap;">
+    <a href="https://instagram.com/torneoardillitas" target="_blank" style="font-family:'Oswald', sans-serif; color:#FFD700; text-decoration:none; border:2px solid #FFD700; padding:8px 20px; border-radius:25px; letter-spacing:1px;">📸 @torneoardillitas</a>
+    <a href="https://www.instagram.com/centralceresoficial/" target="_blank" style="font-family:'Oswald', sans-serif; color:#FFD700; text-decoration:none; border:2px solid #FFD700; padding:8px 20px; border-radius:25px; letter-spacing:1px;">📸 @centralceresoficial</a>
+  </p>
+  <p style="color:#555; font-size:0.8em; margin-top:20px; font-family:'Roboto', sans-serif;">© 2026 Club Central Argentino Olímpico — Todos los derechos reservados</p>
+</footer>
+
+</body>
+</html>
